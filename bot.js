@@ -16,16 +16,6 @@ client.on('ready', () => {
   });
 
 client.on('message', message => {
-	var args = message.content.split(' ');
-	var args1 = message.content.split(' ').slice(1).join(' ');
-	var args2 = message.content.split(' ')[2];
-	var args3 = message.content.split(' ').slice(3).join(' ');
-	var command = message.content.toLowerCase().split(" ")[0];
-	var muf = message.mentions.users.first();
-	
-	if(message.author.bot) return;
-	if(message.channel.type === 'dm') return;
-	
 	if(command == prefix + 'bc') {
 		if(!message.member.hasPermission('ADMINISTRATOR')) return message.reply('\`\`ADMINISTRATOR\`\` **انت لا تمتلك صلاحية**')
 		if(!args1) return message.channel.send(`**➥ Useage:** ${prefix}bc (كلامك)`);
