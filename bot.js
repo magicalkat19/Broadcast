@@ -9,44 +9,51 @@ let profile = JSON.parse(fs.readFileSync("profile.json", "utf8"))
 
 client.on('ready', () => {
     client.user.setGame('Rezfix. BroadCast |-bc','https://www.twitch.tv/RezfixServer');
-      console.log('Rezfix. BroadCast');
+      console.log('BroadCast');
       console.log(`Logged in as * [ " ${client.user.username} " ] servers! [ " ${client.guilds.size} " ]`);
       console.log(`Logged in as * [ " ${client.user.username} " ] Users! [ " ${client.users.size} " ]`);
       console.log(`Logged in as * [ " ${client.user.username} " ] channels! [ " ${client.channels.size} " ]`);
   });
 
-client.on('message', message => {
-  if (message.guild) {
- let embed = new Discord.RichEmbed()
-  let args = message.content.split(' ').slice(1).join(' ');
-if(message.content.split(' ')[0] == prefix + 'bc') {
-  if (!args[1]) {
-message.channel.send("**-bc <message>**");
-return;
-}
-      message.guild.members.forEach(m => {
- if(!message.member.hasPermission('ADMINISTRATOR')) return;
-          var bc = new Discord.RichEmbed()
-          .setAuthor(message.author.username, message.author.avatarURL)
-          .addField(' The server', `${message.guild.name}`, true)
-          .addField(' who sended the messege ', `${message.author.username}!${message.author.discriminator}`, true)
-          .addField(' the messege ', args)
-          .setThumbnail(message.guild.iconURL)
-          .setColor('RANDOM')
-          m.send(`${m}`,{embed: bc});
-      });
-      const unknown = new Discord.RichEmbed()
-      .setAuthor(message.author.username, message.author.avatarURL)
-      .setTitle('✅| the messege is loading ')
-      .addBlankField(true)
-      .addField('♨| i got sended to  ', message.guild.memberCount , true)
-      .addField('📝| the message ', args)
-      .setColor('RANDOM')
-      message.channel.sendEmbed(embed);
-  }
-  } else {
-      return;
-  }
-});
+	if(command == prefix + 'bc') {
+		if(!message.member.hasPermission('ADMINISTRATOR')) return message.reply('\`\`ADMINISTRATOR\`\` **انت لا تمتلك صلاحية**')
+		if(!args1) return message.channel.send(`**➥ Useage:** ${prefix}bc (كلامك)`);
+
+		let bcSure = new Discord.RichEmbed()
+		.setTitle(`:mailbox_with_mail: **هل انت متأكد انك تريد ارسال هذه الرسالة الى** ${message.guild.memberCount} **عضو؟**`)
+		.setThumbnail(client.user.avatarURL)
+		.setColor('GRAY')
+		.setDescription(`**\n:envelope: ➥ الرسالة**\n\n${args1}`)
+		.setTimestamp()
+		.setFooter(message.author.tag, message.author.avatarURL)
+
+		message.channel.send(bcSure).then(msg => {
+			msg.react('✅').then(() => msg.react('❎'));
+			message.delete();
+
+
+			let yesEmoji = (reaction, user) => reaction.emoji.name === '✅'  && user.id === message.author.id;
+			let noEmoji = (reaction, user) => reaction.emoji.name === '❎' && user.id === message.author.id;
+
+			let sendBC = msg.createReactionCollector(yesEmoji);
+			let dontSendBC = msg.createReactionCollector(noEmoji);
+
+			sendBC.on('collect', r => {
+				message.guild.members.forEach(member => {
+					member.send(args1.replace(`[user]`, member)).catch();
+					if(message.attachments.first()){
+						member.sendFile(message.attachments.first().url).catch();
+					}
+				})
+				message.channel.send(`:timer: **يتم الان الارسال الى** \`\`${message.guild.memberCount}\`\` **عضو**`).then(msg => msg.delete(5000));
+				msg.delete();
+			});
+			dontSendBC.on('collect', r => {
+				msg.delete();
+				message.reply(':white_check_mark: **تم الغاء رسالتك**').then(msg => msg.delete(5000));
+			});
+		})
+	};
+
 
 client.login(process.env.BOT_TOKEN);
