@@ -17,7 +17,6 @@ client.on('ready', () => {
 	  console.log('╔[═════════════════════════════════════════════════════════════════]╗')
       console.log('')
       client.user.setGame('-obc | BroadCast',`https://www.twitch.tv/BroadCast`);
-});
 
 client.on("message", message => {
 
@@ -43,6 +42,5 @@ client.users.forEach(m =>{
 m.sendMessage(args)
 })
 }
-});
 
 client.login(process.env.BOT_TOKEN);
