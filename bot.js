@@ -19,45 +19,31 @@ client.on('ready', () => {
       client.user.setGame('-bc | BroadCast',`https://www.twitch.tv/BroadCast`);
     });
 
-client.on('message', message => {
-	if(command == prefix + 'bc') {
-		if(!message.member.hasPermission('ADMINISTRATOR')) return message.reply('\`\`ADMINISTRATOR\`\` **انت لا تمتلك صلاحية**')
-		if(!args1) return message.channel.send(`**➥ Useage:** ${prefix}bc (كلامك)`);
+   client.on("message", message => {
+       var prefix = "-";
+ 
+             var args = message.content.substring(prefix.length).split(" ");
+                if (message.content.startsWith(prefix + "bc")) {
+                          if (!message.member.hasPermission("ADMINISTRATOR"))  return;
 
-		let bcSure = new Discord.RichEmbed()
-		.setTitle(`:mailbox_with_mail: **هل انت متأكد انك تريد ارسال هذه الرسالة الى** ${message.guild.memberCount} **عضو؟**`)
-		.setThumbnail(client.user.avatarURL)
-		.setColor('GRAY')
-		.setDescription(`**\n:envelope: ➥ الرسالة**\n\n${args1}`)
-		.setTimestamp()
-		.setFooter(message.author.tag, message.author.avatarURL)
+                          if (!args[1]) {
+                            
+                                 let embed3 = new Discord.RichEmbed()
+                                     .setDescription(":white_check_mark: | تم ارسال رسالة لا يوجد فيها شيء")
+                                       .setColor("#FF00FF")
+                                          message.channel.sendEmbed(embed3);
+                            
+                                        } else {
 
-		message.channel.send(bcSure).then(msg => {
-			msg.react('✅').then(() => msg.react('❎'));
-			message.delete();
-
-
-			let yesEmoji = (reaction, user) => reaction.emoji.name === '✅'  && user.id === message.author.id;
-			let noEmoji = (reaction, user) => reaction.emoji.name === '❎' && user.id === message.author.id;
-
-			let sendBC = msg.createReactionCollector(yesEmoji);
-			let dontSendBC = msg.createReactionCollector(noEmoji);
-
-			sendBC.on('collect', r => {
-				message.guild.members.forEach(member => {
-					member.send(args1.replace(`[user]`, member)).catch();
-					if(message.attachments.first()){
-						member.sendFile(message.attachments.first().url).catch();
-					}
-				})
-				message.channel.send(`:timer: **يتم الان الارسال الى** \`\`${message.guild.memberCount}\`\` **عضو**`).then(msg => msg.delete(5000));
-				msg.delete();
-			});
-			dontSendBC.on('collect', r => {
-				msg.delete();
-				message.reply(':white_check_mark: **تم الغاء رسالتك**').then(msg => msg.delete(5000));
-			});
-		})
-	};
+                            
+                                           let embed4 = new Discord.RichEmbed()
+                                                            .setDescription(':white_check_mark: | تم ارسال الرساله للجميع ..')
+                                                                .setColor("#99999")
+                               
+                                                                message.channel.sendEmbed(embed4);
+                                                      message.delete();
+                            }
+                          }
+});
 
 client.login(process.env.BOT_TOKEN);
