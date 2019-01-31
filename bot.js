@@ -16,7 +16,7 @@ client.on('ready', () => {
 	  console.log(`╔[ Channels [ " ${client.channels.size} " ]╗`);
 	  console.log('╔[═════════════════════════════════════════════════════════════════]╗')
       console.log('')
-      client.user.setGame('-bc | BroadCast',`https://www.twitch.tv/BroadCast`);
+      client.user.setGame('-obc | BroadCast',`https://www.twitch.tv/BroadCast`);
 
 client.on("message", message => {
 
